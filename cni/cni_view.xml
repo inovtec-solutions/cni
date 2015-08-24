@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+  	
+	<!-- Product -->
+	<record id="product_template_form_view" model="ir.ui.view">
+		<field name="name">product.template.form2</field>
+		<field name="model">product.template</field>
+		<field name="inherit_id" ref="product.product_template_form_view"/>
+		<field name="arch" type="xml">
+			<field name="product_manager" position="after">
+			    <field name="sku"/>
+			    <field name="dimension"/>
+			</field>
+		</field>
+	</record>
+	
+	<!--Asset or Tools Requisition-->
+
+	<record id="asset_req_form" model="ir.ui.view">
+		<field name="name">asset.requisition.form</field>
+	    <field name="model">asset.requisition</field>
+	    <field name="arch" type="xml">
+		<form string="Tools">
+			<header>
+	            <button name="send_request" string="Send" type="object" states="Draft" class="oe_highlight" groups="base.group_user"/>
+	            <button name="approve_request" string="Approve" type="object" states="Open" groups="base.group_user"/>
+				<button name="cancelled_request" string="Cancel" type="object" states="Draft,Open,Cancel,Approved" groups="base.group_user"/>
+	        	<field name="state" widget="statusbar" statusbar_visible=",Draft,Open,Close,Cancel" statusbar_colors='{"Cancel":"red"}' readonly="1"/>
+	    	</header>
+	    
+			<sheet string="Issue Tools">
+	            <div class="oe_title">
+	            <h2>Tools Requisition</h2>    
+				<p>Tools Requisition Process. Mention the Project and employee that require Tools for clients projects.</p>
+	            </div>
+	            <group>
+	                <group  attrs="{'readonly':[('state','!=','Draft')]}" >
+	                    <field name="project" />
+						<field name="date_requisted" />
+						 <field name="employee"/>
+	                </group>
+					<group>
+						<field name="aprroved_by" readonly = "1"/>
+	                </group>
+	            </group>
+	            <notebook>
+	                <page string="Assets" >
+	                	<field name="requisition_lines_ids" attrs="{'readonly':[('state','!=','Draft')]}"/>
+	                </page>
+					<page string="Note" >
+	                	<field name="note" placeholder  = "Leave note here....."  attrs="{'readonly':[('state','in',['Approved','Cancel'])]}"/>
+	                </page>
+	            </notebook>
+	    	</sheet>
+		</form>
+	    </field>
+    </record>
+
+	<record id="view_asset_req_tree" model="ir.ui.view">
+		<field name="name">asset.requisition.tree</field>
+	    <field name="model">asset.requisition</field>
+	    <field name="arch" type="xml">
+	    <tree string="Tools Requisition">
+	        <field name="name"/>
+	        <field name="project"/>
+	        <field name="state"/>
+	    </tree>
+	    </field>
+	</record>
+
+	<record id="action_asset_req_view" model="ir.actions.act_window">
+	    <field name="name">Tools Requisition</field>
+	    <field name="res_model">asset.requisition</field>
+	    <field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	    <field name="help" type="html">
+	    	<p class="oe_view_nocontent_create">
+	        Click to add a new version.
+	      	</p>
+			<p>
+	        Define here the different versions of your tools on which
+	        you can work on issues.
+	      	</p>
+	    </field>	
+	</record>
+
+
+	<!--Toole requistion lines-->
+	<record id="view_assetlines_req_tree" model="ir.ui.view">
+			<field name="name">asset.requisition.lines.tree</field>
+		    <field name="model">asset.requisition.lines</field>
+		    <field name="arch" type="xml">
+		    <tree editable = "bottom" string="Tools Requisition">
+		        <field name="name"/>
+		        <field name="requisition_id" invisible = "1"/>
+		    </tree>
+		    </field>
+		</record>
+
+
+	<!--Daily Sale Reconciliation-->
+
+    <record id="sale_reconcile_form" model="ir.ui.view">
+	    <field name="name">daily.sale.reconciliation.form</field>
+	    <field name="model">daily.sale.reconciliation</field>
+	    <field name="arch" type="xml">
+		<form string="Daily Sale">
+			<header>
+	        	<button name="dispatch_product" string="Dispatch" type="object" states="Draft" class="oe_highlight" groups="base.group_user"/>
+	            <button name="confirm_sale" string="Confirm Sale" type="object" states="Dispatched" groups="base.group_user"/>
+				<button name="cancel_sale" string="Cancel This Sale" type="object" states="Draft,Dispatched" groups="base.group_user"/>
+	            <field name="state" widget="statusbar" statusbar_visible=",Draft,Dispatched,Confirmed,Cancel" statusbar_colors='{"Cancel":"blue"}' readonly="1"/>
+	        </header>
+	        
+			<sheet string="Material Sale Process">
+	        	<h2><p>Daily Sale</p></h2>
+				<p style = "color:blue;">Initiate your daily consubale sale process. Material should be reconcile on same form,</p>
+	            <group>
+				
+				<group attrs="{'readonly':[('state','!=','Draft')]}">
+					<field name="project" />
+					<field name="date_dispatched" />
+					<field name="employee"/>
+				</group>
+				<group attrs="{'readonly':[('state','=','Draft')]}">
+					<field name="dispatched_by" />
+					<field name="date_confirmed" />
+					<field name="confirmed_by"  />
+					
+				</group>
+	            </group>
+	            <notebook>
+	                <page string="Products" >
+	                	<field name="sale_reconcile_lines_ids" attrs="{'readonly':[('state','in',['Cancel','Confirmed'])]}"/>
+	                </page>
+					<page string="Reminder">
+	                	<field name="note" placeholder  = "Special Note......."/>
+	                </page>
+	            </notebook>
+				<group>
+				<group>
+				<p>State Confirm  Mean Transaction is succssfully completed</p>
+				</group>
+				<group><label for="total_amount" groups=""/>
+				<h2><field name="total_amount" readonly="1"/></h2>
+				</group>
+	            </group>
+	        </sheet>
+	    </form>
+	    </field>
+	</record>
+
+ 	<record id="view_sale_reconciliation_tree" model="ir.ui.view">
+	    <field name="name">daily.sale.reconciliation.tree</field>
+	    <field name="model">daily.sale.reconciliation</field>
+	    <field name="arch" type="xml">
+	        <tree  string="Daily Sale">
+	            <field name="project" />
+	            <field name="employee" />
+	            <field name="state"/>
+	        </tree>
+	    </field>
+    </record>
+
+	<record id="action_daily_sale_reconcile" model="ir.actions.act_window">
+	    <field name="name">Daily Sale Reconcile</field>
+	    <field name="res_model">daily.sale.reconciliation</field>
+	    <field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	    <field name="help" type="html">
+	    	<p class="oe_view_nocontent_create">
+	        Click to add a new version.
+	      	</p>
+			<p>
+	        Define here the different versions of your products on which
+	        you can work on issues and return.
+	      	</p>
+	    </field>
+    </record>
+
+	<record id="view_sale_reconciliationlines_tree" model="ir.ui.view">
+	    <field name="name">daily.sale.reconciliatiolinesn.tree</field>
+	    <field name="model">sale.reconcile.lines</field>
+	    <field name="arch" type="xml">
+	    <tree editable = "bottom" string="Daily Sale Requistion">
+	        <field name="name" attrs="{'readonly':[('state','!=','Draft')]}"  />
+	        <field name="dispatch_qty" attrs="{'readonly':[('state','!=','Draft')]}" />
+	        <field name="returned_qty" on_change="onchange_returned_product(returned_qty)" attrs="{'readonly':[('state','!=','Dispatched')]}"/>
+			<field name="net_qty" readonly ="1" attrs="{'invisible':[('state','=','Draft')]}"/>
+			<field name="price_unit" attrs="{'readonly':[('state','in',['Cancel','Confirmed'])]}"/>
+			<field name="total" readonly ="1"/>
+			<field name="state" readonly = "1"/>
+	    </tree>
+	    </field>
+	</record>
+	
+<!--Clinet stock provision-->
+
+	<record id="client_stock_provide_form" model="ir.ui.view">
+		<field name="name">get.client.stock.form</field>
+	    <field name="model">get.client.stock</field>
+	    <field name="arch" type="xml">
+		<form string="Tools">
+			<header>
+	            <button name="add_to_stock" string="Ad To Stock" type="object" states="Draft" class="oe_highlight" groups="base.group_user"/>
+	            <button name="confirm_add_to_stock" string="Confirm Add To Stock" type="object" states="Waiting" groups="base.group_user"/>
+				<button name="cancelled_stock_reception" string="Cancel" type="object" states="Draft,Waiting" groups="base.group_user"/>
+	        	<field name="state" widget="statusbar" statusbar_visible=",Draft,Waiting,In_Stock,Waiting_Stockout,Stockout,Cancel" statusbar_colors='{"Cancel":"red"}' readonly="1"/>
+	    	</header>
+	    
+			<sheet string="Add Clinet stock">
+	            <div class="oe_title">
+	            <h2>Client Sock</h2>    
+				<p>Add Client material to existing stock,Use the same form to handover back to client </p>
+	            </div>
+	            <group>
+	                <group  attrs="{'readonly':[('state','!=','Draft')]}" >
+	                    <field name="project" />
+						<field name="partner_id" />
+						 <field name="date_received"/>
+	                </group>
+					<group>
+						<field name="aprroved_by" readonly = "1"/>
+						<field name="location_id" required = "1"/>
+	                </group>
+	            </group>
+	            <notebook>
+	                <page string="Assets" >
+	                	<field name="stock_lines_ids" attrs="{'readonly':[('state','!=','Draft')]}"/>
+	                </page>
+					<page string="Note" >
+	                	<field name="note" placeholder  = "Leave note here....."  attrs="{'readonly':[('state','in',['Approved','Cancel'])]}"/>
+	                </page>
+	            </notebook>
+	    	</sheet>
+		</form>
+	    </field>
+    </record>
+
+	<record id="get_client_product_tree" model="ir.ui.view">
+		<field name="name">get.client.stock.tree</field>
+	    <field name="model">get.client.stock</field>
+	    <field name="arch" type="xml">
+	    <tree string="Client Stock">
+	        <field name="project"/>
+	        <field name="partner_id"/>
+	        <field name="state"/>
+	    </tree>
+	    </field>
+	</record>
+
+	<record id="action_get_client_product" model="ir.actions.act_window">
+	    <field name="name">Client Stockables</field>
+	    <field name="res_model">get.client.stock</field>
+	    <field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	    <field name="help" type="html">
+	    	<p class="oe_view_nocontent_create">
+	        Click to add a new version.
+	      	</p>
+			<p>
+	        Define here the different versions of your tools on which
+	        you can work on issues.
+	      	</p>
+	    </field>	
+	</record>
+
+
+	<!--Client stock lines-->
+	<record id="view_client_stockline_tree" model="ir.ui.view">
+			<field name="name">client.stock.lines.tree</field>
+		    <field name="model">client.stock.lines</field>
+		    <field name="arch" type="xml">
+		    <tree editable = "bottom" string="Tools Requisition">
+		        <field name="name"/>
+		        <field name="product_qty"/>
+				<field name="price_unit"/>
+				<field name="total"/>
+		    </tree>
+		    </field>
+		</record>
+
+	<!--Project inherited-->
+
+		<record model="ir.ui.view" id="inherit_project_form">
+		      <field name="name">project.inherit</field>
+		      <field name="model">project.project</field>
+		      <field name="inherit_id" ref="project.edit_project"/>
+		      <field name="type">form</field>
+		      <field name="arch" type="xml">
+		      <field name="name" position="after">
+			  	</field>
+				<notebook>
+					<page string = "Stockable">
+					<field name="stockable" readonly="1"/>
+			    	</page>
+					<page string = "Material">
+					<field name="consumable" readonly="1"/>
+			    	</page>
+					<page string = "Tools">
+					<field name="tools_used" readonly="1"/>
+			    	</page>
+			   </notebook>
+		      </field>
+		    </record>
+	
+
+
+
+</data>
+</openerp>

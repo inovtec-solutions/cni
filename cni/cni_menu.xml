@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+	
+	<!-- Daily Sale Reconciliation END-->
+	<menuitem name="CNI" id="menu_cni_root" sequence="1"/>
+  	
+	<menuitem name="Tools" parent="menu_cni_root" id="menu_cni_ssets" sequence="1" groups=""/>
+ 	<menuitem action="action_asset_req_view" parent="menu_cni_ssets" id="menu_req_assets" groups=""/>
+
+	<menuitem name="Sales" parent="menu_cni_root" id="menu_sales_heading" sequence="2" groups=""/>
+ 	<menuitem action="action_daily_sale_reconcile" parent="menu_sales_heading" id="menu_daily_sales" groups=""/>
+
+	<menuitem name="Client Stock" parent="menu_cni_root" id="menu_client_stock_heading" sequence="2" groups=""/>
+	<menuitem action="action_get_client_product" parent="menu_client_stock_heading" id="menu_client_stock" groups=""/>
+</data>
+</openerp>
